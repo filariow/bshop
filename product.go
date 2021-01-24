@@ -12,7 +12,7 @@ type Product struct {
 type Beer struct {
 	Product
 
-	SizeMl float64
+	Size   float64
 	Vol    float64
 	Brewer string
 }
