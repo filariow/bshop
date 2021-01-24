@@ -16,3 +16,7 @@ type Server struct {
 func (s *Server) Configure() {
 	s.registerRoutes()
 }
+
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s.mux.ServeHTTP(w, r)
+}
