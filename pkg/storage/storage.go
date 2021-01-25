@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/filariow/bshop"
 )
@@ -13,3 +14,7 @@ type BeerRepository interface {
 	Delete(context.Context, int64) error
 	List(context.Context) ([]bshop.Beer, error)
 }
+
+var (
+	ErrorNotFound = fmt.Errorf("requested entry not found in db")
+)
