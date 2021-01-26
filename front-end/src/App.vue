@@ -4,7 +4,7 @@
     <app-bar />
     <v-main class="grey lighten-4 fill-height">
       <v-container fluid>
-      <BeersTable />
+        <router-view></router-view>
       </v-container>
     </v-main>
   </v-app>
@@ -12,13 +12,11 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import BeersTable from "./components/BeersTable.vue";
 import AppBar from "./components/AppBar.vue";
 import AppDrawer from "./components/AppDrawer.vue";
 
 @Component({
   components: {
-    BeersTable,
     AppBar,
     AppDrawer,
   },
