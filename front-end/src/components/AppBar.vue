@@ -1,6 +1,9 @@
 <template>
-  <v-app-bar app dark elevate-on-scroll scroll-target="#scrolling-techniques-7">
-    <v-app-bar-nav-icon></v-app-bar-nav-icon>
+  <v-app-bar app dark elevate-on-scroll dense>
+    <v-app-bar-nav-icon
+      @click.stop="drawer()"
+      v-if="isMobile"
+    ></v-app-bar-nav-icon>
     <v-toolbar-title>Monkey's v2</v-toolbar-title>
     <v-spacer></v-spacer>
 
@@ -15,8 +18,13 @@
 </template>
 
 <script lang="ts">
+import { LayoutModule } from "@/store/LayoutStore";
 import { Component, Vue } from "vue-property-decorator";
 
 @Component
-export default class AppBar extends Vue {}
+export default class AppBar extends Vue {
+  drawer(): void {
+    LayoutModule.revertDrawer();
+  }
+}
 </script>
