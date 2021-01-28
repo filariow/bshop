@@ -1,30 +1,38 @@
 <template>
-  <v-container>
-    <v-card>
-      <v-card-title> {{ beer.name }} </v-card-title>
-
-      <v-row>
-        <v-col>
-          {{ beer.brewer }}
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          {{ beer.price.toFixed(2) }} €
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          {{ beer.cost.toFixed(2) }} €
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          {{ beer.size }} mL
-        </v-col>
-      </v-row>
-    </v-card>
-  </v-container>
+  <v-card>
+    <v-card-title> {{ beer.name }} </v-card-title>
+    <v-form>
+      <v-container>
+        <v-row>
+          <v-col cols="12" md="4">
+            <v-text-field v-model="name" label="Name" read-only></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="brewer"
+              label="Brewer"
+              read-only
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="price"
+              label="Price"
+              read-only
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field v-model="cost" label="Cost" read-only></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field v-model="size" label="Size" read-only></v-text-field>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-form>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -45,35 +53,24 @@ export default class BeerDetailsForm extends Vue {
     };
   }
 
-  get headers() {
-    return [
-      {
-        text: "Name",
-        align: "start",
-        sortable: true,
-        value: "name",
-      },
-      {
-        text: "Price",
-        align: "end",
-        sortable: true,
-        value: "price",
-      },
-      {
-        text: "Size",
-        align: "end",
-        sortable: true,
-        value: "size",
-      },
-    ];
+  get name(): string {
+    return this.beer.name;
   }
 
-  private beers = [
-    { name: "First Beer", price: "1.0 €", size: "330 mL" },
-    { name: "Second Beer", price: "2.0 €", size: "568 mL" },
-    { name: "Third Beer", price: "3.0 €", size: "660 mL" },
-    { name: "Fourth Beer", price: "4.0 €", size: "750 mL" },
-    { name: "Fifth Beer", price: "5.0 €", size: "1000 mL" },
-  ];
+  get brewer(): string {
+    return this.beer.brewer;
+  }
+
+  get price(): string {
+    return `${this.beer.price} €`;
+  }
+
+  get cost(): string {
+    return `${this.beer.cost} €`;
+  }
+
+  get size(): string {
+    return `${this.beer.size} mL`;
+  }
 }
 </script>

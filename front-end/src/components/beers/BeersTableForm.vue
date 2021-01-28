@@ -18,6 +18,7 @@
         :items="beers"
         :items-per-page="10"
         :search="search"
+        @click:row="rowClicked"
         class="elevation-1"
         readonly
       ></v-data-table>
@@ -56,11 +57,16 @@ export default class BeersTableForm extends Vue {
   }
 
   private beers = [
-    { name: "First Beer", price: "1.0 €", size: "330 mL" },
-    { name: "Second Beer", price: "2.0 €", size: "568 mL" },
-    { name: "Third Beer", price: "3.0 €", size: "660 mL" },
-    { name: "Fourth Beer", price: "4.0 €", size: "750 mL" },
-    { name: "Fifth Beer", price: "5.0 €", size: "1000 mL" },
+    { id: 1, name: "First Beer", price: "1.0 €", size: "330 mL" },
+    { id: 2, name: "Second Beer", price: "2.0 €", size: "568 mL" },
+    { id: 3, name: "Third Beer", price: "3.0 €", size: "660 mL" },
+    { id: 4, name: "Fourth Beer", price: "4.0 €", size: "750 mL" },
+    { id: 5, name: "Fifth Beer", price: "5.0 €", size: "1000 mL" },
   ];
+  
+  rowClicked(item: any): void {
+    const id = item.id;
+		this.$router.push({ name: "beer-details", params: { id } });
+	}
 }
 </script>

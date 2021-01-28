@@ -42,13 +42,12 @@ const routes: Array<RouteConfig> = [
     path: "/beers",
     name: "beers",
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/beers/BeersIndex.vue")
+      import(/* webpackChunkName: "about" */ "../views/beers/BeersIndex.vue"),
   },
   {
-    path: '/beers/:id',
+    path: ':id',
     name: "beer-details",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/beers/BeerDetails.vue")
+    component: () => import(/* webpackChunkName: "about" */ "../views/beers/BeerDetails.vue"),
   }
 ];
 
