@@ -2,7 +2,6 @@
   <v-app-bar app dark elevate-on-scroll dense>
     <v-app-bar-nav-icon
       @click.stop="drawer()"
-      v-if="isMobile"
     ></v-app-bar-nav-icon>
     <v-toolbar-title>Monkey's v2</v-toolbar-title>
     <v-spacer></v-spacer>

@@ -81,7 +81,7 @@ export default class AppDrawer extends Vue {
       {
         title: "Home",
         icon: "mdi-home",
-        page: "Home",
+        page: "home",
       },
     ];
   }
@@ -90,7 +90,7 @@ export default class AppDrawer extends Vue {
       {
         title: "Beers",
         icon: "mdi-glass-mug-variant",
-        page: "Beers",
+        page: "beers",
       },
     ];
   }
@@ -100,17 +100,17 @@ export default class AppDrawer extends Vue {
       {
         title: "About",
         icon: "mdi-information",
-        page: "About",
+        page: "about",
       },
       {
         title: "Help",
         icon: "mdi-help",
-        page: "Help",
+        page: "help",
       },
       {
         title: "Support",
         icon: "mdi-heart",
-        page: "Support",
+        page: "support",
       },
     ];
   }

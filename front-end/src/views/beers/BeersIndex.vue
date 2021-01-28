@@ -1,15 +1,15 @@
 <template>
-  <BeersTable />
+  <BeersTableForm />
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import BeersTable from "@/components/beers/BeersTable.vue";
+import BeersTableForm from "@/components/beers/BeersTableForm.vue";
 
 @Component({
   components: {
-    BeersTable,
+    BeersTableForm,
   },
 })
-export default class BeersTableIndex extends Vue {}
+export default class BeersIndex extends Vue {}
 </script>

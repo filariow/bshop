@@ -7,12 +7,12 @@ Vue.use(VueRouter);
 const routes: Array<RouteConfig> = [
   {
     path: "/",
-    name: "Home",
+    name: "home",
     component: Home,
   },
   {
     path: "/about",
-    name: "About",
+    name: "about",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -21,7 +21,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: "/help",
-    name: "Help",
+    name: "help",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -30,7 +30,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: "/support",
-    name: "Support",
+    name: "support",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -40,9 +40,15 @@ const routes: Array<RouteConfig> = [
 
   {
     path: "/beers",
-    name: "Beers",
-    component: () => 
+    name: "beers",
+    component: () =>
       import(/* webpackChunkName: "about" */ "../views/beers/BeersIndex.vue")
+  },
+  {
+    path: '/beers/:id',
+    name: "beer-details",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/beers/BeerDetails.vue")
   }
 ];
 

@@ -29,7 +29,7 @@
 import { Component, Vue } from "vue-property-decorator";
 
 @Component
-export default class BeersTable extends Vue {
+export default class BeersTableForm extends Vue {
   private search = "";
 
   get headers() {
