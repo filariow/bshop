@@ -44,6 +44,7 @@ func (s *Server) handlerCreateBeer() http.HandlerFunc {
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Handling create beer request:", r.URL.String())
 		d := request{}
 		{
 			b, err := ioutil.ReadAll(r.Body)
@@ -94,6 +95,7 @@ func (s *Server) handlerCreateBeer() http.HandlerFunc {
 
 func (s *Server) handlerDeleteBeer() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Handling delete beer request:", r.URL.String())
 		v := mux.Vars(r)
 
 		is, ok := v["id"]
@@ -130,6 +132,7 @@ func (s *Server) handlerReadBeer() http.HandlerFunc {
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Handling read beer request:", r.URL.String())
 		v := mux.Vars(r)
 
 		is, ok := v["id"]
@@ -158,6 +161,8 @@ func (s *Server) handlerReadBeer() http.HandlerFunc {
 			ID:     b.ID,
 			Name:   b.Name,
 			Brewer: b.Brewer,
+			Cost:   b.Cost,
+			Price:  b.Price,
 			Vol:    b.Vol,
 			Size:   b.Size,
 		}
@@ -192,6 +197,7 @@ func (s *Server) handlerUpdateBeer() http.HandlerFunc {
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Handling update beer request:", r.URL.String())
 		v := mux.Vars(r)
 
 		is, ok := v["id"]
@@ -281,6 +287,7 @@ func (s *Server) handlerListBeer() http.HandlerFunc {
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Handling list beers request:", r.URL.String())
 		bb, err := s.BeerRepo.List(r.Context())
 		if err != nil {
 			//TODO: log error
