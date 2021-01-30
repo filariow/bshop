@@ -264,8 +264,20 @@ func (s *Server) handlerListBeer() http.HandlerFunc {
 		Beers []beer `json:"beers"`
 	}
 
-	mapResult := func([]bshop.Beer) []beer {
-		return nil
+	mapResult := func(bb []bshop.Beer) []beer {
+		rbb := make([]beer, len(bb))
+		for i, rb := range bb {
+			rbb[i] = beer{
+				ID:     rb.ID,
+				Name:   rb.Name,
+				Cost:   rb.Cost,
+				Price:  rb.Price,
+				Brewer: rb.Brewer,
+				Size:   rb.Size,
+				Vol:    rb.Vol,
+			}
+		}
+		return rbb
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
