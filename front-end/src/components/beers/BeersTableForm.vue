@@ -18,22 +18,42 @@
         :items="beers"
         :items-per-page="10"
         :search="search"
+        :loading="isLoading"
         @click:row="rowClicked"
         class="elevation-1"
         readonly
       ></v-data-table>
+
+      <v-alert prominent type="error" v-if="inError">
+        <v-row align="center">
+          <v-col class="grow">Error loading beers</v-col>
+          <v-col class="shrink">
+            <v-btn @click="load" :loading="isLoading">Reload</v-btn>
+          </v-col>
+        </v-row>
+        <v-row
+          class="ms-2"
+          align="center"
+          v-for="err in errors"
+          v-bind:key="err"
+        >
+          <v-col class="grow">{{ err }}</v-col>
+        </v-row>
+      </v-alert>
     </v-card>
   </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { BeersApiService } from "@/services/BeersApiService";
+import { Beer } from "@/models/Beers";
 
 @Component
 export default class BeersTableForm extends Vue {
   private search = "";
 
-  get headers() {
+  get headers(): any[] {
     return [
       {
         text: "Name",
@@ -56,17 +76,33 @@ export default class BeersTableForm extends Vue {
     ];
   }
 
-  private beers = [
-    { id: 1, name: "First Beer", price: "1.0 €", size: "330 mL" },
-    { id: 2, name: "Second Beer", price: "2.0 €", size: "568 mL" },
-    { id: 3, name: "Third Beer", price: "3.0 €", size: "660 mL" },
-    { id: 4, name: "Fourth Beer", price: "4.0 €", size: "750 mL" },
-    { id: 5, name: "Fifth Beer", price: "5.0 €", size: "1000 mL" },
-  ];
-  
+  private beers: Beer[] = [];
+  private errors: any[] = [];
+  private isLoading = false;
+
+  get inError(): boolean {
+    return this.errors.length > 0;
+  }
+
+  async load() {
+    try {
+      this.isLoading = true;
+      this.errors = [];
+      this.beers = (await BeersApiService.get<Beer[]>("")).data;
+    } catch (e) {
+      this.errors.push(e);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  async mounted() {
+    await this.load();
+  }
+
   rowClicked(item: any): void {
     const id = item.id;
-		this.$router.push({ name: "beer-details", params: { id } });
-	}
+    this.$router.push({ name: "beer-details", params: { id } });
+  }
 }
 </script>
