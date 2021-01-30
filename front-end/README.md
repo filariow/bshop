@@ -6,7 +6,15 @@ yarn install
 ```
 
 ### Compiles and hot-reloads for development
+
+
 ```
+# generate certificates
+pushd certs
+openssl req -nodes -new -x509 -keyout server.key -out server.cert
+popd
+
+# run the application
 yarn run serve
 ```
 
