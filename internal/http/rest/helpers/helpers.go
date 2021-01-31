@@ -1,4 +1,4 @@
-package rest
+package helpers
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (s *Server) respond(w http.ResponseWriter, r *http.Request, data interface{}, status int) {
+func Respond(w http.ResponseWriter, r *http.Request, status int, data interface{}) {
 	w.WriteHeader(status)
 	if data == nil {
 		return
@@ -24,9 +24,7 @@ type ErrorMessage struct {
 	Message string
 }
 
-func (s *Server) error(w http.ResponseWriter, r *http.Request, status int, msg string) {
-	ve := ErrorMessage{
-		Message: msg,
-	}
-	s.respond(w, r, ve, status)
+func Error(w http.ResponseWriter, r *http.Request, status int, msg string) {
+	ve := ErrorMessage{Message: msg}
+	Respond(w, r, status, ve)
 }

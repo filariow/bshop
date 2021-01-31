@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/filariow/bshop"
-	"github.com/filariow/bshop/pkg/storage"
-	"github.com/filariow/bshop/pkg/storage/inmem"
+	"github.com/filariow/bshop/pkg/beer/storage"
+	"github.com/filariow/bshop/pkg/beer/storage/inmem"
 	"github.com/matryer/is"
 )
 
@@ -141,8 +141,8 @@ func Test_List(t *testing.T) {
 			is.True(len(c.bb) == len(bb))
 			is.NoErr(err)
 			for i, b := range c.bb {
-				b.ID = int64(i + 1)
-				fb := func(id int64) *bshop.Beer {
+				b.ID = uint64(i + 1)
+				fb := func(id uint64) *bshop.Beer {
 					for _, cb := range bb {
 						if cb.ID == id {
 							return &cb

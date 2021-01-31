@@ -9,8 +9,8 @@ import (
 	"testing"
 
 	"github.com/filariow/bshop"
-	"github.com/filariow/bshop/pkg/storage"
-	"github.com/filariow/bshop/pkg/storage/psql"
+	"github.com/filariow/bshop/pkg/beer/storage"
+	"github.com/filariow/bshop/pkg/beer/storage/psql"
 	"github.com/jackc/pgx/v4"
 	"github.com/matryer/is"
 	"github.com/ory/dockertest/v3"

@@ -2,7 +2,7 @@ package bshop
 
 //Product represents a product
 type Product struct {
-	ID    int64
+	ID    uint64
 	Name  string
 	Price float64
 	Cost  float64

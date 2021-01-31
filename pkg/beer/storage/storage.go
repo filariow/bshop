@@ -8,10 +8,10 @@ import (
 )
 
 type BeerRepository interface {
-	Create(context.Context, bshop.Beer) (int64, error)
-	Read(context.Context, int64) (bshop.Beer, error)
+	Create(context.Context, bshop.Beer) (uint64, error)
+	Read(context.Context, uint64) (bshop.Beer, error)
 	Update(context.Context, bshop.Beer) error
-	Delete(context.Context, int64) error
+	Delete(context.Context, uint64) error
 	List(context.Context) ([]bshop.Beer, error)
 }
 

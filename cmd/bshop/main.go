@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/filariow/bshop/pkg/http/rest"
-	"github.com/filariow/bshop/pkg/storage/inmem"
+	"github.com/filariow/bshop/internal/http/rest/server"
+	"github.com/filariow/bshop/pkg/beer/http/rest"
+	"github.com/filariow/bshop/pkg/beer/storage/inmem"
 )
 
 func main() {
@@ -21,11 +22,17 @@ func run() error {
 	addr := address()
 	log.Println("Configuring server on address", addr)
 	r := inmem.New()
-	s := rest.Server{BeerRepo: r}
-	s.Configure()
+
+	cc := []server.ControllerRegistration{
+		{
+			Path:    "/beers",
+			Handler: rest.New(r, "/beers"),
+		},
+	}
+	s := server.New(cc)
 
 	log.Println("Start listening...")
-	if err := http.ListenAndServe(addr, &s); err != nil {
+	if err := http.ListenAndServe(addr, s); err != nil {
 		return err
 	}
 	return nil

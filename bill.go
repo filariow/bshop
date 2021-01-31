@@ -1,8 +1,13 @@
 package bshop
 
+import "time"
+
 type Bill struct {
-	Products []Product
-	Discount Discount
+	Name      string
+	Products  []Product
+	Discount  Discount
+	CreatedAt time.Time
+	ClosedAt  time.Time
 }
 
 type Discount interface {

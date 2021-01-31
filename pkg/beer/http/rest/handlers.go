@@ -9,10 +9,11 @@ import (
 	"strconv"
 
 	"github.com/filariow/bshop"
+	"github.com/filariow/bshop/internal/http/rest/helpers"
 	"github.com/gorilla/mux"
 )
 
-func (s *Server) handlerCreateBeer() http.HandlerFunc {
+func (c *controller) handlerCreateBeer() http.HandlerFunc {
 	type request struct {
 		Name   string  `json:"name"`
 		Cost   float64 `json:"cost"`
@@ -23,24 +24,7 @@ func (s *Server) handlerCreateBeer() http.HandlerFunc {
 	}
 
 	type response struct {
-		ID int64 `json:"id"`
-	}
-
-	isValid := func(r *request) (bool, map[string]string) {
-		ee := map[string]string{}
-		if r.Name == "" {
-			ee["Name"] = "A Name is required"
-		}
-
-		if r.Cost < .0 {
-			ee["Cost"] = "Cost must be bigger than or equal to 0"
-		}
-
-		if r.Price < .0 {
-			ee["Price"] = "Price must be bigger than or equal to 0"
-		}
-		log.Printf("Validation errors: %v", ee)
-		return len(ee) == 0, ee
+		ID uint64 `json:"id"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -50,22 +34,16 @@ func (s *Server) handlerCreateBeer() http.HandlerFunc {
 			b, err := ioutil.ReadAll(r.Body)
 			if err != nil {
 				log.Println("can not read request body")
-				s.error(w, r, http.StatusInternalServerError, "Can not read request body")
+				helpers.Error(w, r, http.StatusInternalServerError, "Can not read request body")
 				return
 			}
 
 			if err := json.Unmarshal(b, &d); err != nil {
 				log.Println("can not unmarshal request body as JSON")
 				//TODO: log error
-				s.error(w, r, http.StatusInternalServerError, "Can not unmarshal body as JSON")
+				helpers.Error(w, r, http.StatusInternalServerError, "Can not unmarshal body as JSON")
 				return
 			}
-		}
-		log.Printf("request is: %v", d)
-
-		if ok, ee := isValid(&d); !ok {
-			s.respond(w, r, ee, http.StatusBadRequest)
-			return
 		}
 
 		b := bshop.Beer{
@@ -79,21 +57,21 @@ func (s *Server) handlerCreateBeer() http.HandlerFunc {
 			Vol:    d.Vol,
 		}
 
-		id, err := s.BeerRepo.Create(r.Context(), b)
+		id, err := c.createBeer(r.Context(), b)
 		if err != nil {
 			//TODO: handle InternalError, BadRequest, etc
 			log.Println("Beer Repository returned error:", err)
-			s.error(w, r, http.StatusBadRequest, fmt.Sprintf("Can not create beer: %v", err))
+			helpers.Error(w, r, http.StatusBadRequest, fmt.Sprintf("Can not create beer: %v", err))
 			return
 		}
 		b.ID = id
 
 		rs := response{ID: id}
-		s.respond(w, r, rs, http.StatusOK)
+		helpers.Respond(w, r, http.StatusOK, rs)
 	}
 }
 
-func (s *Server) handlerDeleteBeer() http.HandlerFunc {
+func (c *controller) handlerDeleteBeer() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Handling delete beer request:", r.URL.String())
 		v := mux.Vars(r)
@@ -101,28 +79,28 @@ func (s *Server) handlerDeleteBeer() http.HandlerFunc {
 		is, ok := v["id"]
 		if !ok {
 			log.Println("can not found id parameter for beer to delete")
-			s.error(w, r, http.StatusBadRequest, `Delete beer needs the parameter "id" to be provided`)
+			helpers.Error(w, r, http.StatusBadRequest, `Delete beer needs the parameter "id" to be provided`)
 			return
 		}
 
-		i, err := strconv.ParseInt(is, 10, 64)
+		i, err := strconv.ParseUint(is, 10, 64)
 		if err != nil {
-			s.error(w, r, http.StatusBadRequest, fmt.Sprintf("Provided id (%v) is not a valid id", is))
+			helpers.Error(w, r, http.StatusBadRequest, fmt.Sprintf("Provided id (%v) is not a valid id", is))
 			return
 		}
 
-		if err = s.BeerRepo.Delete(r.Context(), i); err != nil {
+		if err = c.deleteBeer(r.Context(), i); err != nil {
 			//TODO: log error
 			//TODO: handle InternalError, NotFound, etc
-			s.error(w, r, http.StatusBadRequest, fmt.Sprintf("Can not delete Beer %v", i))
+			helpers.Error(w, r, http.StatusBadRequest, fmt.Sprintf("Can not delete Beer %v", i))
 			return
 		}
 	}
 }
 
-func (s *Server) handlerReadBeer() http.HandlerFunc {
+func (c *controller) handlerReadBeer() http.HandlerFunc {
 	type response struct {
-		ID     int64   `json:"id"`
+		ID     uint64  `json:"id"`
 		Name   string  `json:"name"`
 		Cost   float64 `json:"cost"`
 		Price  float64 `json:"price"`
@@ -139,21 +117,21 @@ func (s *Server) handlerReadBeer() http.HandlerFunc {
 		if !ok {
 			//TODO: log error
 			log.Println("can not found id parameter for beer to read")
-			s.error(w, r, http.StatusBadRequest, `Read beer needs the parameter "id" to be provided`)
+			helpers.Error(w, r, http.StatusBadRequest, `Read beer needs the parameter "id" to be provided`)
 			return
 		}
 
-		i, err := strconv.ParseInt(is, 10, 64)
+		i, err := strconv.ParseUint(is, 10, 64)
 		if err != nil {
-			s.error(w, r, http.StatusBadRequest, fmt.Sprintf("Provided id (%v) is not a valid id", is))
+			helpers.Error(w, r, http.StatusBadRequest, fmt.Sprintf("Provided id (%v) is not a valid id", is))
 			return
 		}
 
-		b, err := s.BeerRepo.Read(r.Context(), i)
+		b, err := c.readBeer(r.Context(), i)
 		if err != nil {
 			//TODO: log error
 			//TODO: handle InternalError, NotFound, etc
-			s.error(w, r, http.StatusBadRequest, fmt.Sprintf("Can not read beer %v", i))
+			helpers.Error(w, r, http.StatusBadRequest, fmt.Sprintf("Can not read beer %v", i))
 			return
 		}
 
@@ -166,11 +144,11 @@ func (s *Server) handlerReadBeer() http.HandlerFunc {
 			Vol:    b.Vol,
 			Size:   b.Size,
 		}
-		s.respond(w, r, rs, http.StatusOK)
+		helpers.Respond(w, r, http.StatusOK, rs)
 	}
 }
 
-func (s *Server) handlerUpdateBeer() http.HandlerFunc {
+func (c *controller) handlerUpdateBeer() http.HandlerFunc {
 	type request struct {
 		Name   string  `json:"name"`
 		Brewer string  `json:"brewer"`
@@ -180,22 +158,6 @@ func (s *Server) handlerUpdateBeer() http.HandlerFunc {
 		Size   float64 `json:"size"`
 	}
 
-	isValid := func(r *request) (bool, map[string]string) {
-		ee := map[string]string{}
-		if r.Name == "" {
-			ee["Name"] = "A Name is required"
-		}
-
-		if r.Cost < .0 {
-			ee["Cost"] = "Cost must be bigger than or equal to 0"
-		}
-
-		if r.Price < .0 {
-			ee["Price"] = "Price must be bigger than or equal to 0"
-		}
-		return len(ee) == 0, ee
-	}
-
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Handling update beer request:", r.URL.String())
 		v := mux.Vars(r)
@@ -203,13 +165,13 @@ func (s *Server) handlerUpdateBeer() http.HandlerFunc {
 		is, ok := v["id"]
 		if !ok {
 			//TODO: log error
-			s.error(w, r, http.StatusBadRequest, `Update beer needs the parameter "id" to be provided`)
+			helpers.Error(w, r, http.StatusBadRequest, `Update beer needs the parameter "id" to be provided`)
 			return
 		}
 
-		i, err := strconv.ParseInt(is, 10, 64)
+		i, err := strconv.ParseUint(is, 10, 64)
 		if err != nil {
-			s.error(w, r, http.StatusBadRequest, fmt.Sprintf("Provided id (%v) is not a valid id", is))
+			helpers.Error(w, r, http.StatusBadRequest, fmt.Sprintf("Provided id (%v) is not a valid id", is))
 			return
 		}
 
@@ -218,20 +180,15 @@ func (s *Server) handlerUpdateBeer() http.HandlerFunc {
 			b, err := ioutil.ReadAll(r.Body)
 			if err != nil {
 				//TODO: log error
-				s.error(w, r, http.StatusInternalServerError, "Can not read request body")
+				helpers.Error(w, r, http.StatusInternalServerError, "Can not read request body")
 				return
 			}
 
 			if err := json.Unmarshal(b, &d); err != nil {
 				//TODO: log error
-				s.error(w, r, http.StatusInternalServerError, "Can not unmarshal body to JSON")
+				helpers.Error(w, r, http.StatusInternalServerError, "Can not unmarshal body to JSON")
 				return
 			}
-		}
-
-		if ok, ee := isValid(&d); !ok {
-			s.respond(w, r, ee, http.StatusBadRequest)
-			return
 		}
 
 		b := bshop.Beer{
@@ -246,18 +203,18 @@ func (s *Server) handlerUpdateBeer() http.HandlerFunc {
 			Vol:    d.Vol,
 		}
 
-		if err := s.BeerRepo.Update(r.Context(), b); err != nil {
+		if err := c.updateBeer(r.Context(), b); err != nil {
 			//TODO: log error
 			//TODO: handle InternalError, NotFound, etc
-			s.error(w, r, http.StatusBadRequest, fmt.Sprintf("Can not read beer %v", i))
+			helpers.Error(w, r, http.StatusBadRequest, fmt.Sprintf("Can not read beer %v", i))
 			return
 		}
 	}
 }
 
-func (s *Server) handlerListBeer() http.HandlerFunc {
+func (c *controller) handlerListBeer() http.HandlerFunc {
 	type beer struct {
-		ID     int64   `json:"id"`
+		ID     uint64  `json:"id"`
 		Name   string  `json:"name"`
 		Cost   float64 `json:"cost"`
 		Price  float64 `json:"price"`
@@ -288,15 +245,15 @@ func (s *Server) handlerListBeer() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Handling list beers request:", r.URL.String())
-		bb, err := s.BeerRepo.List(r.Context())
+		bb, err := c.listBeer(r.Context())
 		if err != nil {
 			//TODO: log error
 			//TODO: handle InternalError, NotFound, etc
-			s.error(w, r, http.StatusBadRequest, "Can not list beers ")
+			helpers.Error(w, r, http.StatusBadRequest, "Can not list beers ")
 			return
 		}
 
 		bbr := mapResult(bb)
-		s.respond(w, r, bbr, http.StatusOK)
+		helpers.Respond(w, r, http.StatusOK, bbr)
 	}
 }

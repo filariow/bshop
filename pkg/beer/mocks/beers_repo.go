@@ -35,10 +35,10 @@ func (m *MockBeerRepository) EXPECT() *MockBeerRepositoryMockRecorder {
 }
 
 // Create mocks base method
-func (m *MockBeerRepository) Create(arg0 context.Context, arg1 bshop.Beer) (int64, error) {
+func (m *MockBeerRepository) Create(arg0 context.Context, arg1 bshop.Beer) (uint64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", arg0, arg1)
-	ret0, _ := ret[0].(int64)
+	ret0, _ := ret[0].(uint64)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -50,7 +50,7 @@ func (mr *MockBeerRepositoryMockRecorder) Create(arg0, arg1 interface{}) *gomock
 }
 
 // Read mocks base method
-func (m *MockBeerRepository) Read(arg0 context.Context, arg1 int64) (bshop.Beer, error) {
+func (m *MockBeerRepository) Read(arg0 context.Context, arg1 uint64) (bshop.Beer, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Read", arg0, arg1)
 	ret0, _ := ret[0].(bshop.Beer)
@@ -79,7 +79,7 @@ func (mr *MockBeerRepositoryMockRecorder) Update(arg0, arg1 interface{}) *gomock
 }
 
 // Delete mocks base method
-func (m *MockBeerRepository) Delete(arg0 context.Context, arg1 int64) error {
+func (m *MockBeerRepository) Delete(arg0 context.Context, arg1 uint64) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", arg0, arg1)
 	ret0, _ := ret[0].(error)

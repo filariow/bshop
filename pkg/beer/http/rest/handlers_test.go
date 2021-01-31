@@ -8,8 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/filariow/bshop/pkg/http/rest"
-	"github.com/filariow/bshop/pkg/mocks"
+	"github.com/filariow/bshop/pkg/beer/http/rest"
+	"github.com/filariow/bshop/pkg/beer/mocks"
 	"github.com/golang/mock/gomock"
 	"github.com/matryer/is"
 )
@@ -37,7 +37,7 @@ func Test_CreateBeer(t *testing.T) {
 	}
 	type storageResponse struct {
 		times int
-		id    int64
+		id    uint64
 		err   error
 	}
 	type testCase struct {
@@ -139,8 +139,7 @@ func Test_CreateBeer(t *testing.T) {
 		defer ctrl.Finish()
 
 		r := mocks.NewMockBeerRepository(ctrl)
-		s := rest.Server{BeerRepo: r}
-		s.Configure()
+		s := rest.New(r, "/beers")
 
 		r.
 			EXPECT().
