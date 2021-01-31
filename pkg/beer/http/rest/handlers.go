@@ -9,8 +9,8 @@ import (
 	"strconv"
 
 	"github.com/filariow/bshop"
-	"github.com/filariow/bshop/internal/http/rest/helpers"
-	"github.com/gorilla/mux"
+	"github.com/filariow/bshop/pkg/http/rest/helpers"
+	"github.com/go-chi/chi"
 )
 
 func (c *controller) handlerCreateBeer() http.HandlerFunc {
@@ -74,10 +74,8 @@ func (c *controller) handlerCreateBeer() http.HandlerFunc {
 func (c *controller) handlerDeleteBeer() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Handling delete beer request:", r.URL.String())
-		v := mux.Vars(r)
-
-		is, ok := v["id"]
-		if !ok {
+		is := chi.URLParam(r, "id")
+		if is == "" {
 			log.Println("can not found id parameter for beer to delete")
 			helpers.Error(w, r, http.StatusBadRequest, `Delete beer needs the parameter "id" to be provided`)
 			return
@@ -111,10 +109,8 @@ func (c *controller) handlerReadBeer() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Handling read beer request:", r.URL.String())
-		v := mux.Vars(r)
-
-		is, ok := v["id"]
-		if !ok {
+		is := chi.URLParam(r, "id")
+		if is == "" {
 			//TODO: log error
 			log.Println("can not found id parameter for beer to read")
 			helpers.Error(w, r, http.StatusBadRequest, `Read beer needs the parameter "id" to be provided`)
@@ -160,10 +156,8 @@ func (c *controller) handlerUpdateBeer() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Handling update beer request:", r.URL.String())
-		v := mux.Vars(r)
-
-		is, ok := v["id"]
-		if !ok {
+		is := chi.URLParam(r, "id")
+		if is == "" {
 			//TODO: log error
 			helpers.Error(w, r, http.StatusBadRequest, `Update beer needs the parameter "id" to be provided`)
 			return

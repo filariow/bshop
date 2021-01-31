@@ -10,6 +10,7 @@ import (
 
 	"github.com/filariow/bshop/pkg/beer/http/rest"
 	"github.com/filariow/bshop/pkg/beer/mocks"
+	"github.com/go-chi/chi"
 	"github.com/golang/mock/gomock"
 	"github.com/matryer/is"
 )
@@ -139,7 +140,7 @@ func Test_CreateBeer(t *testing.T) {
 		defer ctrl.Finish()
 
 		r := mocks.NewMockBeerRepository(ctrl)
-		s := rest.New(r, "/beers")
+		s := rest.New(r)
 
 		r.
 			EXPECT().
@@ -149,7 +150,11 @@ func Test_CreateBeer(t *testing.T) {
 
 		w := httptest.NewRecorder()
 		q := httptest.NewRequest(http.MethodPost, "/beers", toJSON(t, &tc.q))
-		s.ServeHTTP(w, q)
+		cr := chi.NewRouter()
+		cr.Route("/beers", func(nr chi.Router) {
+			s.RegisterRoutes(nr)
+		})
+		cr.ServeHTTP(w, q)
 
 		is.Equal(w.Result().StatusCode, tc.a.status)
 	}

@@ -1,33 +1,14 @@
 package rest
 
 import (
-	"fmt"
-	"net/http"
-
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi"
 )
 
-func (c *controller) registerRoutes(pathPrefix string) {
-	r := mux.NewRouter()
-	r.
-		HandleFunc(pathPrefix, c.handlerCreateBeer()).
-		Methods(http.MethodPost)
-
-	r.
-		HandleFunc(fmt.Sprintf("%s/{id}", pathPrefix), c.handlerReadBeer()).
-		Methods(http.MethodGet)
-
-	r.
-		HandleFunc(fmt.Sprintf("%s/{id}", pathPrefix), c.handlerUpdateBeer()).
-		Methods(http.MethodPut)
-
-	r.
-		HandleFunc(fmt.Sprintf("%s/{id}", pathPrefix), c.handlerDeleteBeer()).
-		Methods(http.MethodDelete)
-
-	r.
-		HandleFunc(pathPrefix, c.handlerListBeer()).
-		Methods(http.MethodGet)
-
-	c.mux = r
+func (c *controller) RegisterRoutes(r chi.Router) error {
+	r.Post("/", c.handlerCreateBeer())
+	r.Get("/{id}", c.handlerReadBeer())
+	r.Put("/{id}", c.handlerUpdateBeer())
+	r.Delete("/{id}", c.handlerDeleteBeer())
+	r.Get("/", c.handlerListBeer())
+	return nil
 }

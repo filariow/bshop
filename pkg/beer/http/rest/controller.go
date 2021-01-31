@@ -1,16 +1,13 @@
 package rest
 
 import (
-	"net/http"
-
 	"github.com/filariow/bshop/pkg/beer/storage"
 	"github.com/filariow/bshop/pkg/beer/usecase"
+	"github.com/filariow/bshop/pkg/http/rest/server"
 )
 
 //Server REST server structure
 type controller struct {
-	mux http.Handler
-
 	createBeer usecase.CreateBeerFunc
 	readBeer   usecase.ReadBeerFunc
 	updateBeer usecase.UpdateBeerFunc
@@ -18,7 +15,7 @@ type controller struct {
 	listBeer   usecase.ListBeerFunc
 }
 
-func New(repo storage.BeerRepository, pathPrefix string) http.Handler {
+func New(repo storage.BeerRepository) server.Controller {
 	s := &controller{
 		createBeer: usecase.CreateBeer(repo),
 		readBeer:   usecase.ReadBeer(repo),
@@ -26,10 +23,5 @@ func New(repo storage.BeerRepository, pathPrefix string) http.Handler {
 		deleteBeer: usecase.DeleteBeer(repo),
 		listBeer:   usecase.ListBeer(repo),
 	}
-	s.registerRoutes(pathPrefix)
 	return s
-}
-
-func (s *controller) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	s.mux.ServeHTTP(w, r)
 }

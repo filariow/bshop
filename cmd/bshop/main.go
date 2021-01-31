@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/filariow/bshop/internal/http/rest/server"
 	"github.com/filariow/bshop/pkg/beer/http/rest"
 	"github.com/filariow/bshop/pkg/beer/storage/inmem"
+	"github.com/filariow/bshop/pkg/http/rest/server"
 )
 
 func main() {
@@ -25,8 +25,8 @@ func run() error {
 
 	cc := []server.ControllerRegistration{
 		{
-			Path:    "/beers",
-			Handler: rest.New(r, "/beers"),
+			PathPrefix: "/beers",
+			Controller: rest.New(r),
 		},
 	}
 	s := server.New(cc)
